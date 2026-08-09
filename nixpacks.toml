@@ -1,0 +1,6 @@
+# Nixpacks configuration to install Chromium and its dependencies on Railway
+[providers]
+node = {}
+
+[phases.setup]
+nixPkgs = ["nodejs", "chromium"]

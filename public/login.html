@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Kalyan Property Consultants</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Sleek Dark Theme Color Palette */
+            --bg-primary: hsl(220, 20%, 8%);
+            --bg-secondary: hsl(220, 20%, 12%);
+            --bg-card: hsla(220, 20%, 15%, 0.6);
+            --border-color: hsla(220, 20%, 25%, 0.5);
+            
+            --text-primary: hsl(220, 10%, 95%);
+            --text-secondary: hsl(220, 10%, 65%);
+            --text-muted: hsl(220, 10%, 45%);
+            
+            --primary: hsl(35, 100%, 55%);
+            --primary-hover: hsl(35, 100%, 48%);
+            --primary-focus: hsla(35, 100%, 55%, 0.35);
+            
+            --danger: hsl(0, 85%, 60%);
+            --danger-bg: hsla(0, 85%, 60%, 0.15);
+            
+            --success: hsl(140, 70%, 50%);
+            
+            /* 8px Grid System */
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --space-xxl: 48px;
+            
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            
+            --transition-speed: 0.25s;
+        }
+
+        /* Light Theme Toggle Support (Variables) */
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg-primary: hsl(220, 20%, 96%);
+                --bg-secondary: hsl(220, 20%, 90%);
+                --bg-card: hsla(0, 0%, 100%, 0.7);
+                --border-color: hsla(220, 20%, 80%, 0.6);
+                
+                --text-primary: hsl(220, 20%, 15%);
+                --text-secondary: hsl(220, 15%, 40%);
+                --text-muted: hsl(220, 10%, 60%);
+                
+                --primary: hsl(35, 100%, 50%);
+                --primary-hover: hsl(35, 100%, 43%);
+                
+                --danger-bg: hsla(0, 85%, 60%, 0.1);
+            }
+        }
+
+        /* Accessibility - Respect motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(35, 100%, 55%, 0.07) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, hsla(220, 100%, 50%, 0.05) 0px, transparent 50%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-md);
+        }
+
+        main {
+            width: 100%;
+            max-width: 440px;
+        }
+
+        @keyframes cardFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl) var(--space-xl);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-lg);
+            animation: cardFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .header-section {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        .logo-emoji {
+            font-size: 3rem;
+            margin-bottom: var(--space-xs);
+            display: block;
+        }
+
+        .title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .title span {
+            color: var(--primary);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 400;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-control {
+            width: 100%;
+            padding: 12px var(--space-md);
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .input-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-focus);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: var(--space-md);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: var(--space-xs);
+            transition: color var(--transition-speed);
+        }
+
+        .password-toggle:hover {
+            color: var(--text-primary);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            color: hsl(220, 20%, 8%);
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--space-sm);
+            box-shadow: 0 4px 12px rgba(251, 146, 60, 0.2);
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-container {
+            display: none;
+            align-items: flex-start;
+            gap: var(--space-sm);
+            padding: var(--space-md);
+            background-color: var(--danger-bg);
+            border: 1px solid var(--danger);
+            border-radius: var(--radius-md);
+            color: var(--danger);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .error-container.visible {
+            display: flex;
+        }
+
+        .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid currentColor;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .footer-credit {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: var(--space-md);
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="login-card">
+            <header class="header-section">
+                <span class="logo-emoji">🏢</span>
+                <h1 class="title">Kalyan <span>Properties</span></h1>
+                <p class="subtitle">Property Consultant Admin Portal</p>
+            </header>
+
+            <form id="login-form">
+                <div class="error-container" id="error-box" role="alert">
+                    <span>⚠️</span>
+                    <span id="error-message">Invalid credentials</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="username" name="username" class="input-control" required autocomplete="username" placeholder="Enter username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" name="password" class="input-control" required autocomplete="current-password" placeholder="Enter password">
+                        <button type="button" class="password-toggle" id="toggle-pw" aria-label="Toggle password visibility">Show</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submit-btn">
+                    <span class="spinner" id="btn-spinner"></span>
+                    <span id="btn-text">Sign In</span>
+                </button>
+            </form>
+        </div>
+        <p class="footer-credit">Secure Access Control &bull; Kalyan Property Consultants v1.0</p>
+    </main>
+
+    <script>
+        // DOM Elements
+        const loginForm = document.getElementById('login-form');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const togglePwBtn = document.getElementById('toggle-pw');
+        const errorBox = document.getElementById('error-box');
+        const errorMessage = document.getElementById('error-message');
+        const submitBtn = document.getElementById('submit-btn');
+        const btnSpinner = document.getElementById('btn-spinner');
+        const btnText = document.getElementById('btn-text');
+
+        // Toggle Password visibility
+        togglePwBtn.addEventListener('click', () => {
+            const isPassword = passwordInput.getAttribute('type') === 'password';
+            passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+            togglePwBtn.textContent = isPassword ? 'Hide' : 'Show';
+        });
+
+        // Form Submit
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Clear previous errors
+            errorBox.classList.remove('visible');
+            
+            // Set loading state
+            submitBtn.disabled = true;
+            btnSpinner.style.display = 'inline-block';
+            btnText.textContent = 'Signing in...';
+
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Redirect to dashboard on success
+                    window.location.href = '/';
+                } else {
+                    // Show error
+                    errorMessage.textContent = data.error || 'Authentication failed. Please try again.';
+                    errorBox.classList.add('visible');
+                    
+                    // Reset button state
+                    submitBtn.disabled = false;
+                    btnSpinner.style.display = 'none';
+                    btnText.textContent = 'Sign In';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                errorMessage.textContent = 'Network error. Please try again later.';
+                errorBox.classList.add('visible');
+
+                // Reset button state
+                submitBtn.disabled = false;
+                btnSpinner.style.display = 'none';
+                btnText.textContent = 'Sign In';
+            }
+        });
+    </script>
+</body>
+</html>

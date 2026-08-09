@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Local Environment Variables
+.env
+
+# WhatsApp Web Session & Cache
+.wwebjs_auth/
+.wwebjs_cache/
+
+# Local Databases (Inquiries, properties, settings, logs)
+inquiries.json
+properties.json
+settings.json
+accuracy_logs.json
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# System Files
+.DS_Store
+Thumbs.db

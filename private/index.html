@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalyan Property Consultants - Admin Portal</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-wrapper">
+                    <span class="logo-emoji">🏢</span>
+                    <h1 class="logo-text">Kalyan <span>Consultants</span></h1>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" id="nav-dashboard">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#orders" class="nav-item" id="nav-orders">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span>Inquiries & Leads</span>
+                    <span class="badge badge-pulse" id="orders-count-badge">0</span>
+                </a>
+                <a href="#menu" class="nav-item" id="nav-menu">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    <span>Properties Portfolio</span>
+                </a>
+                <a href="#chats" class="nav-item" id="nav-chats">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                    <span>WhatsApp Live Chat</span>
+                    <span class="badge badge-pulse" id="chats-count-badge" style="display: none;">0</span>
+                </a>
+                <a href="#accuracy" class="nav-item" id="nav-accuracy">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    <span>AI Accuracy Board</span>
+                </a>
+                <a href="#settings" class="nav-item" id="nav-settings">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="nav-item" id="nav-logout">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    <span>Log Out</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <p class="credit">Kalyan Properties v1.0</p>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header Bar -->
+            <header class="topbar">
+                <div class="page-title-section">
+                    <h2 id="current-page-title">Dashboard</h2>
+                </div>
+                
+                <div class="status-container">
+                    <div class="auto-reply-toggle-wrapper">
+                        <label class="toggle-switch-label" title="Enable/Disable AI Automatic Replies to Incoming WhatsApp Messages">
+                            <input type="checkbox" id="topbar-auto-reply-toggle">
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-text" id="auto-reply-status-text">AI Auto-Reply: OFF</span>
+                        </label>
+                    </div>
+                    <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle dark/light theme">
+                        <svg class="theme-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+                        <svg class="theme-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                    </button>
+                    <div class="status-indicator" id="groq-api-status">
+                        <span class="status-dot green"></span>
+                        <span class="status-text">Groq API Connected</span>
+                    </div>
+                    <div class="status-indicator" id="wa-connection-status">
+                        <span class="status-dot red pulse"></span>
+                        <span class="status-text">WhatsApp Loading...</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dynamic Content Screens -->
+            <div class="screen-container">
+                <!-- 1. DASHBOARD SCREEN -->
+                <section id="screen-dashboard" class="screen-panel active">
+                    <!-- Stats Overview -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon-bg bg-gold">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Total Leads</span>
+                                <h3 class="stat-value" id="stat-revenue">0</h3>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-bg bg-green">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Active Listings</span>
+                                <h3 class="stat-value" id="stat-orders">0</h3>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-bg bg-blue">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Scheduled Visits</span>
+                                <h3 class="stat-value" id="stat-pending">0</h3>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-bg bg-purple">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Closed Deals</span>
+                                <h3 class="stat-value" id="stat-chats">0</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- WhatsApp Connection Section -->
+                    <div class="panel-section grid-2">
+                        <!-- Left: QR code & Status -->
+                        <div class="glass-card whatsapp-login-panel">
+                            <div class="card-header">
+                                <h4 class="card-title">WhatsApp Bot Connection</h4>
+                                <span class="badge" id="wa-connection-badge">Disconnected</span>
+                            </div>
+                            
+                            <div class="qr-container-wrapper">
+                                <div id="wa-qr-code-placeholder" class="qr-placeholder active">
+                                    <div class="loader-ring"></div>
+                                    <p>Initializing WhatsApp client...</p>
+                                </div>
+                                <div id="wa-qr-code-image" class="qr-image-container">
+                                    <img id="qr-img" src="" alt="WhatsApp QR Code">
+                                    <div class="qr-overlay-expired" id="qr-expired-overlay">
+                                        <p>QR Code Expired</p>
+                                        <button class="btn btn-secondary btn-sm" id="btn-refresh-qr">Refresh</button>
+                                    </div>
+                                    <p class="qr-instructions">Scan this QR code from your phone's WhatsApp -> Linked Devices to link the bot.</p>
+                                </div>
+                                <div id="wa-connected-state" class="wa-connected-container">
+                                    <div class="success-checkmark">
+                                        <svg class="checkmark-svg" viewBox="0 0 52 52"><circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/><path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/></svg>
+                                    </div>
+                                    <h5>Bot successfully connected!</h5>
+                                    <p id="wa-connected-details">Linked to WhatsApp Account</p>
+                                    <p class="bot-active-text">The assistant is active and waiting for orders.</p>
+                                    <button class="btn btn-danger btn-sm" id="btn-wa-logout" style="margin-top: var(--space-md);">Unlink WhatsApp Account</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right: Quick Activity / Explanation -->
+                        <div class="glass-card">
+                            <div class="card-header">
+                                <h4 class="card-title">How It Works</h4>
+                            </div>
+                            <div class="process-steps">
+                                <div class="step">
+                                    <div class="step-num">1</div>
+                                    <div class="step-content">
+                                        <h5>Link WhatsApp</h5>
+                                        <p>Scan the QR code to link a WhatsApp phone number. That phone number will act as the firm's AI assistant.</p>
+                                    </div>
+                                </div>
+                                <div class="step">
+                                    <div class="step-num">2</div>
+                                    <div class="step-content">
+                                        <h5>Advisory & Discovery</h5>
+                                        <p>Clients chat with the bot to explore property configurations, prices, and locations, receiving crucial buyer guidelines.</p>
+                                    </div>
+                                </div>
+                                <div class="step">
+                                    <div class="step-num">3</div>
+                                    <div class="step-content">
+                                        <h5>Real-Time Lead Capture</h5>
+                                        <p>When a client requests a site visit or call-back, details sync to this dashboard in real-time, and the owner is notified.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. INQUIRIES SCREEN -->
+                <section id="screen-orders" class="screen-panel">
+                    <div class="orders-layout">
+                        <!-- Active Inquiries / Leads -->
+                        <div class="orders-column">
+                            <div class="column-header">
+                                <h4>New / Pending Leads</h4>
+                                <span class="count-badge yellow" id="count-pending-orders">0</span>
+                            </div>
+                            <div class="orders-list" id="pending-orders-list">
+                                <div class="empty-state">No active inquiries.</div>
+                            </div>
+                        </div>
+
+                        <!-- Contacted, Scheduled, Closed Leads -->
+                        <div class="orders-column">
+                            <div class="column-header">
+                                <h4>Processed Leads & Activity</h4>
+                                <span class="count-badge green" id="count-history-orders">0</span>
+                            </div>
+                            <div class="orders-list" id="history-orders-list">
+                                <div class="empty-state">No processed leads.</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. PROPERTIES SCREEN -->
+                <section id="screen-menu" class="screen-panel">
+                    <div class="menu-control-bar">
+                        <div class="menu-filters">
+                            <button class="filter-btn active" data-category="All">All Properties</button>
+                            <button class="filter-btn" data-category="1 BHK Flats">1 BHK</button>
+                            <button class="filter-btn" data-category="2 BHK Flats">2 BHK</button>
+                            <button class="filter-btn" data-category="Commercial Shops">Commercial</button>
+                            <button class="filter-btn" data-category="Rental Properties">Rentals</button>
+                        </div>
+                        
+                        <button class="btn btn-primary" id="btn-add-item">
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5v14"/></svg>
+                            <span>Add Property Listing</span>
+                        </button>
+                    </div>
+
+                    <div class="menu-grid" id="menu-items-grid">
+                        <!-- Dynamic Property Cards loaded by Javascript -->
+                    </div>
+                </section>
+
+                <!-- 4. SETTINGS SCREEN -->
+                <section id="screen-settings" class="screen-panel">
+                    <div class="glass-card settings-card">
+                        <form id="settings-form">
+                            <div class="form-grid">
+                                <div class="form-group span-2">
+                                    <h4 class="settings-section-title">Consultancy Profile Details</h4>
+                                </div>
+                                <div class="form-group">
+                                    <label for="setting-restro-name">Business Name</label>
+                                    <input type="text" id="setting-restro-name" required placeholder="e.g. Kalyan Property Consultants">
+                                </div>
+                                <div class="form-group">
+                                    <label for="setting-owner-phone">Owner WhatsApp Number</label>
+                                    <input type="text" id="setting-owner-phone" placeholder="e.g. 919876543210 (include country code)">
+                                    <small class="form-help">Orders will be forwarded to this phone number via WhatsApp. Leave blank to disable forwarding.</small>
+                                </div>
+
+                                <div class="form-group span-2">
+                                    <hr class="settings-divider">
+                                    <h4 class="settings-section-title">API & AI Configuration</h4>
+                                </div>
+                                <div class="form-group-checkbox span-2" style="padding: 10px 0;">
+                                    <input type="checkbox" id="setting-auto-reply">
+                                    <label for="setting-auto-reply" style="font-weight: 600; cursor: pointer;">Enable Automatic AI Responses to Incoming WhatsApp Messages</label>
+                                    <small class="form-help" style="display: block; margin-top: 4px;">When disabled (OFF), the bot will NEVER auto-reply to your personal contacts. You can still manually view and send messages via Live Chat.</small>
+                                </div>
+                                <div class="form-group span-2">
+                                     <label for="setting-groq-key">Groq API Key</label>
+                                     <input type="password" id="setting-groq-key" placeholder="Configure Groq Cloud API Key">
+                                     <small class="form-help" id="groq-key-status-text">Status: Key not configured</small>
+                                 </div>
+                                 <div class="form-group span-2">
+                                     <label for="setting-personality-select">Active Bot Personality</label>
+                                     <select id="setting-personality-select" style="width: 100%; padding: 10px 14px; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: #fff; font-family: inherit; font-size: 14px; outline: none; margin-top: 4px;">
+                                         <option value="kalyan">🏢 Kalyan Real Estate Advisor</option>
+                                         <option value="tanmay">🎓 Tanmay's Personal Assistant (Vibecoder & Commerce)</option>
+                                     </select>
+                                     <small class="form-help">Switch which prompt configuration the AI bot runs on.</small>
+                                 </div>
+                                 <div class="form-group span-2">
+                                     <label for="setting-bot-prompt">AI Bot Instructions & Personality</label>
+                                     <textarea id="setting-bot-prompt" rows="5" required placeholder="Provide guidelines for how the bot should behave..."></textarea>
+                                     <small class="form-help">Custom instructions define the tone, language, and guidelines for the AI assistant.</small>
+                                 </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" id="btn-save-settings">Save Configurations</button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- 4.5. AI ACCURACY EVALUATION BOARD SCREEN -->
+                <section id="screen-accuracy" class="screen-panel">
+                    <div class="glass-card settings-card" style="padding: 24px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                            <div>
+                                <h3 style="font-size: 1.5rem; font-weight: 700; color: #fff; margin: 0 0 6px 0;">AI Reply Accuracy Board</h3>
+                                <p style="color: var(--color-text-muted); font-size: 0.875rem; margin: 0;">Evaluate recent AI responses to help fine-tune and track bot correctness.</p>
+                            </div>
+                            <div class="glass-card" style="display: flex; gap: 24px; padding: 12px 24px; align-items: center; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
+                                <div style="text-align: center;">
+                                    <span style="font-size: 1.75rem; font-weight: 700; color: var(--color-primary);" id="accuracy-score-pct">0%</span>
+                                    <div style="font-size: 0.75rem; color: var(--color-text-muted); margin-top: 4px;">Accuracy Score</div>
+                                </div>
+                                <div style="width: 1px; height: 30px; background: rgba(255,255,255,0.1);"></div>
+                                <div style="text-align: center;">
+                                    <span style="font-size: 1.25rem; font-weight: 600; color: #fff;" id="accuracy-total-rated">0</span>
+                                    <div style="font-size: 0.75rem; color: var(--color-text-muted); margin-top: 4px;">Total Rated</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Logs list table container -->
+                        <div style="overflow-x: auto; background: rgba(0,0,0,0.15); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                            <table style="width: 100%; border-collapse: collapse; text-align: left;" id="accuracy-logs-table">
+                                <thead style="background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; color: #fff; font-weight: 600;">
+                                    <tr>
+                                        <th style="padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.05);">Time</th>
+                                        <th style="padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.05);">Contact</th>
+                                        <th style="padding: 14px 16px; width: 30%; border-bottom: 1px solid rgba(255,255,255,0.05);">User Query</th>
+                                        <th style="padding: 14px 16px; width: 30%; border-bottom: 1px solid rgba(255,255,255,0.05);">AI Response</th>
+                                        <th style="padding: 14px 16px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05);">Status</th>
+                                        <th style="padding: 14px 16px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05);">Evaluate</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="accuracy-logs-list" style="font-size: 0.875rem; color: var(--color-text-muted);">
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; padding: 40px; color: var(--color-text-muted);">
+                                            No evaluation logs found. Auto-replies will appear here as they occur.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. WHATSAPP LIVE CHAT SCREEN -->
+                <section id="screen-chats" class="screen-panel">
+                    <div class="chat-container glass-card">
+                        <!-- Left Sidebar: Contact & Chat List -->
+                        <aside class="chat-sidebar-panel">
+                            <div class="chat-sidebar-header">
+                                <div class="chat-search-wrapper">
+                                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                    <input type="text" id="chat-search-input" placeholder="Search contacts or chats...">
+                                </div>
+                                <div class="chat-filter-tabs">
+                                    <button class="chat-filter-tab active" data-chat-filter="all">All</button>
+                                    <button class="chat-filter-tab" data-chat-filter="unread">Unread</button>
+                                </div>
+                            </div>
+                            
+                            <div class="chat-list" id="chat-contacts-list">
+                                <div class="chat-list-loading">
+                                    <div class="loader-ring"></div>
+                                    <p>Loading WhatsApp chats...</p>
+                                </div>
+                            </div>
+                        </aside>
+
+                        <!-- Right Panel: Conversation Thread & Message Composer -->
+                        <main class="chat-main-thread">
+                            <!-- Empty State when no chat selected -->
+                            <div class="chat-empty-state" id="chat-empty-state">
+                                <div class="empty-icon-circle">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                                </div>
+                                <h3>Select a Contact or Chat</h3>
+                                <p>Choose a contact from the left list to view complete conversation history and reply in real-time.</p>
+                            </div>
+
+                            <!-- Active Chat Interface -->
+                            <div class="chat-active-wrapper" id="chat-active-wrapper" style="display: none;">
+                                <!-- Header -->
+                                <header class="chat-header">
+                                    <div class="chat-header-info">
+                                        <div class="chat-avatar-circle" id="active-chat-avatar">C</div>
+                                        <div class="chat-user-details">
+                                            <h4 id="active-chat-name">Contact Name</h4>
+                                            <span class="chat-user-sub" id="active-chat-number">+91 0000000000</span>
+                                        </div>
+                                    </div>
+                                    <div class="chat-header-actions">
+                                        <span class="badge badge-success" id="active-chat-status">Connected</span>
+                                    </div>
+                                </header>
+
+                                <!-- Scrollable Messages Feed -->
+                                <div class="chat-messages-feed" id="chat-messages-feed">
+                                    <!-- Message bubbles dynamically injected here -->
+                                </div>
+
+                                <!-- Quick Replies & Message Composer -->
+                                <div class="chat-composer-section">
+                                    <div class="quick-replies-bar">
+                                        <span class="quick-reply-label">Quick Templates:</span>
+                                        <button class="quick-reply-btn" data-template="Hi, thank you for reaching out to Kalyan Property Consultants! How can we assist you today?">Greeting</button>
+                                        <button class="quick-reply-btn" data-template="We have received your inquiry. Our senior property consultant will call you shortly with complete details.">Acknowledge</button>
+                                        <button class="quick-reply-btn" data-template="Would you like to schedule an on-site visit for this property? We can arrange a convenient time for you.">Site Visit</button>
+                                    </div>
+                                    <form class="chat-composer-form" id="chat-composer-form">
+                                        <textarea id="chat-message-input" placeholder="Type your WhatsApp message..." rows="1" required></textarea>
+                                        <button type="submit" class="btn btn-primary btn-send-chat" id="btn-send-chat">
+                                            <span>Send</span>
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- ADD/EDIT PROPERTY LISTING MODAL -->
+    <div class="modal-overlay" id="menu-modal">
+        <div class="glass-card modal-content">
+            <div class="modal-header">
+                <h4 id="modal-title">Add Property Listing</h4>
+                <button class="btn-close-modal" id="btn-close-modal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            
+            <form id="menu-item-form">
+                <input type="hidden" id="menu-item-id">
+                
+                <div class="form-group">
+                    <label for="menu-item-name">Property Title</label>
+                    <input type="text" id="menu-item-name" required placeholder="e.g. Spacious 2 BHK Near Fire Station">
+                </div>
+                
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="menu-item-price">Base Price (Numerical INR)</label>
+                        <input type="number" id="menu-item-price" min="0" required placeholder="e.g. 4500000">
+                    </div>
+                    <div class="form-group">
+                        <label for="menu-item-price-display">Display Price String</label>
+                        <input type="text" id="menu-item-price-display" required placeholder="e.g. ₹45 Lakhs or ₹15,000 / month">
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="menu-item-category">Property Type</label>
+                        <select id="menu-item-category" required>
+                            <option value="1 BHK Flats">1 BHK Flat</option>
+                            <option value="2 BHK Flats">2 BHK Flat</option>
+                            <option value="Commercial Shops">Commercial Shop</option>
+                            <option value="Rental Properties">Rental Property</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="menu-item-carpet">Carpet Area</label>
+                        <input type="text" id="menu-item-carpet" placeholder="e.g. 680 sq ft" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="menu-item-locality">Locality</label>
+                        <input type="text" id="menu-item-locality" placeholder="e.g. Khadakpada, Kalyan West" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="menu-item-landmark">Landmark</label>
+                        <input type="text" id="menu-item-landmark" placeholder="e.g. Near Fire Station" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="menu-item-status">Construction/Listing Status</label>
+                        <select id="menu-item-status" required>
+                            <option value="Ready to Move">Ready to Move</option>
+                            <option value="Under Construction">Under Construction</option>
+                            <option value="For Rent">For Rent</option>
+                            <option value="Resale">Resale</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="menu-item-image">Property Image</label>
+                    <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
+                        <input type="text" id="menu-item-image" placeholder="Paste image URL..." style="flex: 1;">
+                        <span style="color: var(--color-text-muted); font-size: 0.8rem; font-weight: 500;">OR</span>
+                        <button type="button" class="btn btn-secondary" style="padding: 10px 16px; font-size: 0.875rem;" onclick="document.getElementById('property-image-file').click();">Upload File</button>
+                        <input type="file" id="property-image-file" accept="image/*" style="display: none;">
+                    </div>
+                    <small class="form-help" id="image-upload-status" style="display: block; margin-top: 4px; color: var(--color-primary);"></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="menu-item-desc">Details & Amenities Description</label>
+                    <textarea id="menu-item-desc" rows="3" required placeholder="e.g. Premium layouts, gym, parking, security, lift."></textarea>
+                </div>
+
+                <div class="form-group-checkbox">
+                    <input type="checkbox" id="menu-item-available" checked>
+                    <label for="menu-item-available">Mark as Active/Available</label>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-modal">Save Property Listing</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="app.js?v=1.0.4"></script>
+</body>
+</html>
