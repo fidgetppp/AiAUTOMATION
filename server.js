@@ -750,13 +750,20 @@ app.post('/api/whatsapp/chats/:chatId/send', async (req, res) => {
 });
 
 
-// Detect Chrome or Edge installation paths on Windows for reliability
+// Detect Chrome/Chromium or Edge installation paths for reliability across Windows and Linux
 function getBrowserPath() {
+    // Check if an executable path is explicitly provided in the environment
+    if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+        return process.env.PUPPETEER_EXECUTABLE_PATH;
+    }
     const paths = [
         'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
         'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
         'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
-        'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe'
+        'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
+        '/usr/bin/chromium',
+        '/usr/bin/chromium-browser',
+        '/usr/bin/google-chrome-stable'
     ];
     for (const p of paths) {
         if (existsSync(p)) {
@@ -771,7 +778,11 @@ const puppeteerOptions = {
     protocolTimeout: 0,
     args: [
         '--no-sandbox',
-        '--disable-setuid-sandbox'
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--no-zygote',
+        '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
     ]
 };
 
@@ -783,11 +794,17 @@ if (browserPath) {
     console.log('Using default bundled Chromium');
 }
 
-// Initialize WhatsApp Client
+
+// Initialize WhatsApp Client with optimized Puppeteer settings and web version cache
 const client = new Client({
     authStrategy: new LocalAuth(),
-    puppeteer: puppeteerOptions
+    puppeteer: puppeteerOptions,
+    webVersionCache: {
+        type: 'remote',
+        remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html'
+    }
 });
+
 
 client.on('qr', async (qr) => {
     whatsappStatus = 'qr';
@@ -1063,12 +1080,14 @@ process.on('SIGTERM', async () => {
     process.exit(0);
 });
 
-// Boot the client
-client.initialize().catch(err => {
-    console.error('Failed to initialize WhatsApp client:', err);
+// Start Express Server immediately so Render health checks succeed
+app.listen(PORT, () => {
+    console.log(`Server running at port ${PORT}`);
+    
+    // Boot the WhatsApp client asynchronously in the background
+    console.log('Initializing WhatsApp client in the background...');
+    client.initialize().catch(err => {
+        console.error('Failed to initialize WhatsApp client:', err);
+    });
 });
 
-// Start Express Server
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
-});
