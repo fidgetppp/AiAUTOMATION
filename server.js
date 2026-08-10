@@ -9,6 +9,8 @@ import { existsSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import crypto from 'crypto';
+import chromium from '@sparticuz/chromium';
+
 
 // Load environment variables
 dotenv.config();
@@ -757,9 +759,8 @@ app.post('/api/whatsapp/chats/:chatId/send', async (req, res) => {
 });
 
 
-// Detect Chrome/Chromium or Edge installation paths for reliability across Windows and Linux
-function getBrowserPath() {
-    // Check if an executable path is explicitly provided in the environment
+// Detect Chrome/Chromium or Edge installation paths for reliability across Windows and Linux (including @sparticuz/chromium)
+async function getBrowserPath() {
     if (process.env.PUPPETEER_EXECUTABLE_PATH) {
         return process.env.PUPPETEER_EXECUTABLE_PATH;
     }
@@ -777,13 +778,21 @@ function getBrowserPath() {
             return p;
         }
     }
+    try {
+        const sparticuzPath = await chromium.executablePath();
+        if (sparticuzPath) return sparticuzPath;
+    } catch (e) {
+        console.warn('Sparticuz chromium path fallback warning:', e.message);
+    }
     return null;
 }
 
+const browserPath = await getBrowserPath();
 const puppeteerOptions = {
-    headless: true,
+    headless: chromium.headless !== undefined ? chromium.headless : true,
     protocolTimeout: 0,
     args: [
+        ...(chromium.args || []),
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
@@ -793,13 +802,13 @@ const puppeteerOptions = {
     ]
 };
 
-const browserPath = getBrowserPath();
 if (browserPath) {
     puppeteerOptions.executablePath = browserPath;
-    console.log(`Using system browser path: ${browserPath}`);
+    console.log(`Using resolved browser path: ${browserPath}`);
 } else {
     console.log('Using default bundled Chromium');
 }
+
 
 
 // Initialize WhatsApp Client with optimized Puppeteer settings, longer timeout, and web version cache
