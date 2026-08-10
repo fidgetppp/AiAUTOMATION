@@ -1898,7 +1898,7 @@ body, aside, main, header, .glass-card, .stat-card, .nav-item, input, textarea, 
     height: 16px;
 }
 
-/* Modal Styling */
+/* Modal Overlay Clickability Fix */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -1908,18 +1908,19 @@ body, aside, main, header, .glass-card, .stat-card, .nav-item, input, textarea, 
     background: rgba(0, 0, 0, 0.75);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     z-index: 9999;
     opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
 }
 
 .modal-overlay.active {
-    opacity: 1;
-    visibility: visible;
+    display: flex !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
 }
 
 .modal-content {
@@ -1997,6 +1998,70 @@ body, aside, main, header, .glass-card, .stat-card, .nav-item, input, textarea, 
     padding-top: var(--space-md, 16px);
     border-top: 1px solid var(--color-border-card, rgba(255, 255, 255, 0.1));
 }
+
+/* QR Code Display & Container Styles */
+.qr-container-wrapper {
+    position: relative;
+    min-height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-md, 16px);
+}
+
+.qr-placeholder,
+.qr-image-container,
+.wa-connected-container {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+}
+
+.qr-placeholder.active,
+.qr-image-container.active,
+.wa-connected-container.active {
+    display: flex !important;
+}
+
+.qr-image-container img#qr-img {
+    width: 220px;
+    height: 220px;
+    border-radius: var(--radius-md, 12px);
+    border: 4px solid #ffffff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    background: #ffffff;
+}
+
+.qr-instructions {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--color-text-muted, #aaa);
+    max-width: 280px;
+}
+
+.qr-overlay-expired {
+    display: none;
+}
+
+.qr-overlay-expired.active {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border-radius: var(--radius-md, 12px);
+}
+
 
 
 
