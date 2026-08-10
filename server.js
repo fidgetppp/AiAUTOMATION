@@ -795,15 +795,17 @@ if (browserPath) {
 }
 
 
-// Initialize WhatsApp Client with optimized Puppeteer settings and web version cache
+// Initialize WhatsApp Client with optimized Puppeteer settings, longer timeout, and web version cache
 const client = new Client({
     authStrategy: new LocalAuth(),
+    authTimeoutMs: 90000, // 90 seconds timeout for initialization on slow servers
     puppeteer: puppeteerOptions,
     webVersionCache: {
         type: 'remote',
         remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html'
     }
 });
+
 
 
 client.on('qr', async (qr) => {
