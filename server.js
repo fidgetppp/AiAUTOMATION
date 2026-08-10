@@ -160,10 +160,17 @@ async function readJsonFile(filePath, defaultValue) {
         const data = await fs.readFile(filePath, 'utf-8');
         return JSON.parse(data);
     } catch (err) {
+        if (err.code === 'ENOENT') {
+            try {
+                await fs.writeFile(filePath, JSON.stringify(defaultValue, null, 2), 'utf-8');
+            } catch (wErr) {}
+            return defaultValue;
+        }
         console.error(`Error reading ${filePath}:`, err);
         return defaultValue;
     }
 }
+
 
 async function writeJsonFile(filePath, data) {
     try {
