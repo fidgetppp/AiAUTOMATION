@@ -651,8 +651,216 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Open Add Property Listing Modal
+    function openAddItemModal() {
+        if (menuItemForm) menuItemForm.reset();
+        if (menuItemId) menuItemId.value = '';
+        if (modalTitle) modalTitle.textContent = 'Add Property Listing';
+        const imageStatus = document.getElementById('image-upload-status');
+        if (imageStatus) imageStatus.textContent = '';
+        if (menuModal) menuModal.classList.add('active');
+    }
+
+    // Open Edit Property Listing Modal
+    function openEditItemModal(e) {
+        const propId = e.currentTarget.dataset.id;
+        const p = properties.find(item => item.id === propId);
+        if (!p) return;
+
+        if (menuItemId) menuItemId.value = p.id;
+        if (menuItemName) menuItemName.value = p.title || '';
+        if (menuItemPrice) menuItemPrice.value = p.price || 0;
+        if (menuItemPriceDisplay) menuItemPriceDisplay.value = p.priceDisplay || '';
+        if (menuItemCategory) menuItemCategory.value = p.type || '2 BHK Flats';
+        if (menuItemCarpet) menuItemCarpet.value = p.carpetArea || '';
+        if (menuItemLocality) menuItemLocality.value = p.locality || '';
+        if (menuItemLandmark) menuItemLandmark.value = p.landmark || '';
+        if (menuItemStatus) menuItemStatus.value = p.status || 'Ready to Move';
+        if (menuItemImage) menuItemImage.value = p.image || '';
+        if (menuItemDesc) menuItemDesc.value = p.description || '';
+        if (menuItemAvailable) menuItemAvailable.checked = p.available !== false;
+
+        if (modalTitle) modalTitle.textContent = 'Edit Property Listing';
+        const imageStatus = document.getElementById('image-upload-status');
+        if (imageStatus) imageStatus.textContent = '';
+        if (menuModal) menuModal.classList.add('active');
+    }
+
+    // Close Modal
+    function closeModal() {
+        if (menuModal) menuModal.classList.remove('active');
+    }
+
+    // Delete Property Listing
+    async function handleDeleteMenuItem(e) {
+        const propId = e.currentTarget.dataset.id;
+        const p = properties.find(item => item.id === propId);
+        if (!p) return;
+
+        if (!confirm(`Are you sure you want to delete the listing "${p.title}"?`)) {
+            return;
+        }
+
+        properties = properties.filter(item => item.id !== propId);
+
+        try {
+            const res = await fetch('/api/properties', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(properties)
+            });
+
+            if (res.ok) {
+                showToast(`Listing "${p.title}" deleted.`, 'success');
+                renderPropertiesGrid();
+                updateDashboardStats();
+            } else {
+                showToast('Failed to delete property listing.', 'danger');
+            }
+        } catch (err) {
+            console.error(err);
+            showToast('API Connection Error.', 'danger');
+        }
+    }
+
+    // Submit Add/Edit Property Form
+    if (menuItemForm) {
+        menuItemForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const idVal = menuItemId ? menuItemId.value.trim() : '';
+            const titleVal = menuItemName ? menuItemName.value.trim() : '';
+            const priceVal = menuItemPrice ? (parseFloat(menuItemPrice.value) || 0) : 0;
+            const priceDisplayVal = menuItemPriceDisplay ? (menuItemPriceDisplay.value.trim() || `₹${priceVal}`) : `₹${priceVal}`;
+            const categoryVal = menuItemCategory ? menuItemCategory.value : '2 BHK Flats';
+            const carpetVal = menuItemCarpet ? menuItemCarpet.value.trim() : '';
+            const localityVal = menuItemLocality ? menuItemLocality.value.trim() : '';
+            const landmarkVal = menuItemLandmark ? menuItemLandmark.value.trim() : '';
+            const statusVal = menuItemStatus ? menuItemStatus.value : 'Ready to Move';
+            const imageVal = menuItemImage ? menuItemImage.value.trim() : '';
+            const descVal = menuItemDesc ? menuItemDesc.value.trim() : '';
+            const availableVal = menuItemAvailable ? menuItemAvailable.checked : true;
+
+            if (!titleVal || !carpetVal || !localityVal || !landmarkVal || !descVal) {
+                showToast('Please fill out all required fields.', 'danger');
+                return;
+            }
+
+            if (idVal) {
+                // Edit existing property
+                const index = properties.findIndex(p => p.id === idVal);
+                if (index !== -1) {
+                    properties[index] = {
+                        ...properties[index],
+                        title: titleVal,
+                        price: priceVal,
+                        priceDisplay: priceDisplayVal,
+                        type: categoryVal,
+                        carpetArea: carpetVal,
+                        locality: localityVal,
+                        landmark: landmarkVal,
+                        status: statusVal,
+                        image: imageVal,
+                        description: descVal,
+                        available: availableVal
+                    };
+                }
+            } else {
+                // Create new property
+                const newProp = {
+                    id: 'prop_' + Date.now(),
+                    title: titleVal,
+                    price: priceVal,
+                    priceDisplay: priceDisplayVal,
+                    type: categoryVal,
+                    locality: localityVal,
+                    landmark: landmarkVal,
+                    carpetArea: carpetVal,
+                    status: statusVal,
+                    available: availableVal,
+                    image: imageVal,
+                    description: descVal
+                };
+                properties.unshift(newProp);
+            }
+
+            try {
+                const res = await fetch('/api/properties', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(properties)
+                });
+
+                if (res.ok) {
+                    showToast(idVal ? 'Property listing updated!' : 'New property listing created!', 'success');
+                    closeModal();
+                    renderPropertiesGrid();
+                    updateDashboardStats();
+                } else {
+                    showToast('Failed to save property listing.', 'danger');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('API Connection Error.', 'danger');
+            }
+        });
+    }
+
+    // Modal Event Listeners
+    if (btnAddItem) btnAddItem.addEventListener('click', openAddItemModal);
+    if (btnCloseModal) btnCloseModal.addEventListener('click', closeModal);
+    if (btnCancelModal) btnCancelModal.addEventListener('click', closeModal);
+    if (menuModal) {
+        menuModal.addEventListener('click', (e) => {
+            if (e.target === menuModal) closeModal();
+        });
+    }
+
+    // File Upload Listener for Property Image
+    const fileInput = document.getElementById('property-image-file');
+    if (fileInput) {
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const imageStatus = document.getElementById('image-upload-status');
+            if (imageStatus) imageStatus.textContent = 'Uploading image...';
+
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+                const base64Data = event.target.result;
+                try {
+                    const res = await fetch('/api/upload', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            filename: file.name,
+                            fileData: base64Data
+                        })
+                    });
+
+                    const data = await res.json();
+                    if (res.ok && data.url) {
+                        if (menuItemImage) menuItemImage.value = data.url;
+                        if (imageStatus) imageStatus.textContent = '✓ Image uploaded successfully!';
+                        showToast('Property image uploaded!', 'success');
+                    } else {
+                        if (imageStatus) imageStatus.textContent = 'Upload failed.';
+                        showToast('Failed to upload image.', 'danger');
+                    }
+                } catch (err) {
+                    console.error('Image upload error:', err);
+                    if (imageStatus) imageStatus.textContent = 'Upload error.';
+                    showToast('Image upload failed.', 'danger');
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
     // Category Filter Buttons
     filterButtons.forEach(btn => {
+
         btn.addEventListener('click', (e) => {
             filterButtons.forEach(b => b.classList.remove('active'));
             e.target.classList.add('active');

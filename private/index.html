@@ -94,8 +94,20 @@
             <div class="screen-container">
                 <!-- 1. DASHBOARD SCREEN -->
                 <section id="screen-dashboard" class="screen-panel active">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <div>
+                            <h3 style="font-size: 1.25rem; font-weight: 700; color: #fff;">Overview & Quick Actions</h3>
+                            <p style="color: var(--color-text-muted); font-size: 0.85rem;">Manage your portfolio, active leads, and WhatsApp bot.</p>
+                        </div>
+                        <button class="btn btn-primary" id="btn-add-item-dashboard" onclick="document.getElementById('btn-add-item').click();" style="display: flex; align-items: center; gap: 8px;">
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px;"><path d="M5 12h14M12 5v14"/></svg>
+                            <span>+ Add Property Listing</span>
+                        </button>
+                    </div>
+
                     <!-- Stats Overview -->
                     <div class="stats-grid">
+
                         <div class="stat-card">
                             <div class="stat-icon-bg bg-gold">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
