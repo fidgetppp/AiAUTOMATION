@@ -812,12 +812,16 @@ if (browserPath) {
 }
 
 
-// Initialize WhatsApp Client with optimized Puppeteer settings and 90s timeout
+// Initialize WhatsApp Client with explicit session path, optimized Puppeteer settings and 120s timeout
 const client = new Client({
-    authStrategy: new LocalAuth(),
-    authTimeoutMs: 90000, // 90 seconds timeout for initialization on slow servers
+    authStrategy: new LocalAuth({
+        clientId: 'kalyan-bot',
+        dataPath: path.join(__dirname, '.wwebjs_auth')
+    }),
+    authTimeoutMs: 120000, // 120 seconds timeout for initialization on slow servers
     puppeteer: puppeteerOptions
 });
+
 
 client.on('qr', async (qr) => {
     whatsappStatus = 'qr';
@@ -1105,6 +1109,14 @@ process.on('SIGTERM', async () => {
 // Start Express Server immediately so Render health checks succeed
 app.listen(PORT, () => {
     console.log(`Server running at port ${PORT}`);
+
+    // Self-ping every 5 minutes to prevent Render Free instance from sleeping and losing WhatsApp session
+    const externalUrl = process.env.RENDER_EXTERNAL_URL || `https://aiautomation-te37.onrender.com`;
+    setInterval(async () => {
+        try {
+            await fetch(`${externalUrl}/api/status`);
+        } catch (e) {}
+    }, 5 * 60 * 1000);
     
     // Boot the WhatsApp client asynchronously in the background
     console.log('Initializing WhatsApp client in the background...');
@@ -1112,4 +1124,5 @@ app.listen(PORT, () => {
         console.error('Failed to initialize WhatsApp client:', err);
     });
 });
+
 
