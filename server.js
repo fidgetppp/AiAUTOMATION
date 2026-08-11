@@ -815,6 +815,12 @@ async function getBrowserPath() {
     return null;
 }
 
+try {
+    if (chromium.setGraphicsMode) {
+        chromium.setGraphicsMode = true;
+    }
+} catch (gErr) {}
+
 const browserPath = await getBrowserPath();
 const rawArgs = chromium.args || [];
 const safeChromiumArgs = rawArgs.filter(arg => arg !== '--single-process');
@@ -828,9 +834,12 @@ const puppeteerOptions = {
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
         '--disable-gpu',
+        '--use-gl=swiftshader',
+        '--enable-webgl',
         '--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
     ]
 };
+
 
 
 if (browserPath) {
