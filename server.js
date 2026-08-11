@@ -791,11 +791,14 @@ async function getBrowserPath() {
 }
 
 const browserPath = await getBrowserPath();
+const rawArgs = chromium.args || [];
+const safeChromiumArgs = rawArgs.filter(arg => arg !== '--single-process');
+
 const puppeteerOptions = {
-    headless: chromium.headless !== undefined ? chromium.headless : true,
+    headless: true,
     protocolTimeout: 0,
     args: [
-        ...(chromium.args || []),
+        ...safeChromiumArgs,
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
@@ -803,6 +806,7 @@ const puppeteerOptions = {
         '--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
     ]
 };
+
 
 if (browserPath) {
     puppeteerOptions.executablePath = browserPath;
