@@ -148,6 +148,7 @@ function trackBotMessage(msgId) {
 // WhatsApp Client State
 let whatsappStatus = 'disconnected'; // 'disconnected', 'connecting', 'qr', 'ready'
 let qrCodeData = '';
+let qrTimestamp = 0;
 let whatsappUser = null;
 const serverStartTime = Math.floor(Date.now() / 1000); // Server startup Unix timestamp in seconds
 
@@ -391,8 +392,30 @@ app.get('/api/status', (req, res) => {
     res.json({
         status: whatsappStatus,
         qr: qrCodeData,
+        qrAge: qrTimestamp ? Math.floor((Date.now() - qrTimestamp) / 1000) : 0,
         user: whatsappUser
     });
+});
+
+app.post('/api/refresh-qr', async (req, res) => {
+    try {
+        console.log('Explicitly refreshing WhatsApp QR code...');
+        whatsappStatus = 'connecting';
+        qrCodeData = '';
+        qrTimestamp = 0;
+        try {
+            await client.destroy();
+        } catch (e) {}
+
+        setTimeout(() => {
+            client.initialize().catch(err => console.error('Failed to re-initialize client:', err));
+        }, 500);
+
+        res.json({ success: true, message: 'Generating a new fresh QR code...' });
+    } catch (err) {
+        console.error('Refresh QR error:', err);
+        res.status(500).json({ error: 'Failed to refresh QR code' });
+    }
 });
 
 app.post('/api/logout', async (req, res) => {
@@ -400,6 +423,7 @@ app.post('/api/logout', async (req, res) => {
         console.log('Force unlinking WhatsApp client...');
         whatsappStatus = 'disconnected';
         qrCodeData = '';
+        qrTimestamp = 0;
         whatsappUser = null;
 
         try {
@@ -428,6 +452,7 @@ app.post('/api/logout', async (req, res) => {
         res.json({ success: true, message: 'WhatsApp session unlinked successfully. A new QR code is being generated.' });
     } catch (err) {
         console.error('Logout error:', err);
+
         res.status(500).json({ error: 'Failed to force unlink WhatsApp client' });
     }
 });
@@ -829,6 +854,7 @@ const client = new Client({
 
 client.on('qr', async (qr) => {
     whatsappStatus = 'qr';
+    qrTimestamp = Date.now();
     try {
         qrCodeData = await qrcode.toDataURL(qr);
         console.log('WhatsApp QR Code generated! Scan in dashboard.');

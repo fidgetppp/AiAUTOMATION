@@ -301,7 +301,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 waConnectedState.classList.remove('active');
                 qrImageContainer.classList.add('active');
                 qrImg.src = data.qr;
-                qrExpiredOverlay.classList.remove('active');
+                if (data.qrAge && data.qrAge > 40) {
+                    qrExpiredOverlay.classList.add('active');
+                } else {
+                    qrExpiredOverlay.classList.remove('active');
+                }
             } else if (whatsappStatus === 'connecting') {
                 waConnectedState.classList.remove('active');
                 qrImageContainer.classList.remove('active');
@@ -318,6 +322,51 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Failed to fetch WhatsApp status:', err);
         }
     }
+
+    // Refresh QR Code Button Listener
+    if (btnRefreshQr) {
+        btnRefreshQr.addEventListener('click', async () => {
+            showToast('Generating fresh QR code...', 'info');
+            if (qrExpiredOverlay) qrExpiredOverlay.classList.remove('active');
+            if (qrImageContainer) qrImageContainer.classList.remove('active');
+            if (qrPlaceholder) {
+                qrPlaceholder.classList.add('active');
+                const p = qrPlaceholder.querySelector('p');
+                if (p) p.textContent = 'Generating fresh QR code...';
+            }
+            try {
+                await fetch('/api/refresh-qr', { method: 'POST' });
+                setTimeout(checkWhatsAppStatus, 1500);
+            } catch (err) {
+                console.error('Failed to refresh QR:', err);
+                showToast('Failed to refresh QR code.', 'danger');
+            }
+        });
+    }
+
+    // Unlink / Logout WhatsApp Account Listener
+    if (btnWaLogout) {
+        btnWaLogout.addEventListener('click', async () => {
+            if (!confirm('Are you sure you want to unlink your WhatsApp account? You will need to scan a new QR code.')) {
+                return;
+            }
+            showToast('Unlinking WhatsApp account...', 'info');
+            if (waConnectedState) waConnectedState.classList.remove('active');
+            if (qrPlaceholder) {
+                qrPlaceholder.classList.add('active');
+                const p = qrPlaceholder.querySelector('p');
+                if (p) p.textContent = 'Unlinking account and generating new QR...';
+            }
+            try {
+                await fetch('/api/logout', { method: 'POST' });
+                setTimeout(checkWhatsAppStatus, 2500);
+            } catch (err) {
+                console.error('Failed to logout WhatsApp:', err);
+                showToast('Failed to unlink account.', 'danger');
+            }
+        });
+    }
+
 
     // Fetch and Render Property listings
     async function loadProperties() {
