@@ -813,14 +813,8 @@ if (browserPath) {
 const client = new Client({
     authStrategy: new LocalAuth(),
     authTimeoutMs: 90000, // 90 seconds timeout for initialization on slow servers
-    puppeteer: puppeteerOptions,
-    webVersionCache: {
-        type: 'remote',
-        remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.3000.1018949826-alpha.html'
-    }
+    puppeteer: puppeteerOptions
 });
-
-
 
 client.on('qr', async (qr) => {
     whatsappStatus = 'qr';
@@ -833,16 +827,21 @@ client.on('qr', async (qr) => {
 });
 
 client.on('authenticated', () => {
-    console.log('WhatsApp authenticated! Connecting to WhatsApp Web...');
+    console.log('WhatsApp authenticated! Syncing data with phone...');
     whatsappStatus = 'connecting';
 });
 
 client.on('ready', () => {
     whatsappStatus = 'ready';
     qrCodeData = '';
-    whatsappUser = client.info;
+    try {
+        whatsappUser = client.info || { pushname: 'Kalyan Property Consultants Bot', wid: { user: 'Connected' } };
+    } catch (e) {
+        whatsappUser = { pushname: 'Kalyan Property Consultants Bot', wid: { user: 'Connected' } };
+    }
     console.log('WhatsApp client is ready!');
 });
+
 
 
 client.on('auth_failure', (msg) => {
