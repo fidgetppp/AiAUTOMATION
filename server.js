@@ -797,8 +797,7 @@ const puppeteerOptions = {
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
         '--disable-gpu',
-        '--no-zygote',
-        '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
+        '--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
     ]
 };
 
@@ -810,15 +809,14 @@ if (browserPath) {
 }
 
 
-
-// Initialize WhatsApp Client with optimized Puppeteer settings, longer timeout, and web version cache
+// Initialize WhatsApp Client with optimized Puppeteer settings and 90s timeout
 const client = new Client({
     authStrategy: new LocalAuth(),
     authTimeoutMs: 90000, // 90 seconds timeout for initialization on slow servers
     puppeteer: puppeteerOptions,
     webVersionCache: {
         type: 'remote',
-        remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html'
+        remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.3000.1018949826-alpha.html'
     }
 });
 
@@ -828,16 +826,15 @@ client.on('qr', async (qr) => {
     whatsappStatus = 'qr';
     try {
         qrCodeData = await qrcode.toDataURL(qr);
-        console.log('WhatsApp QR Code generated! Scan in dashboard or directly from terminal below:');
-        try {
-            const qrTerminal = await qrcode.toString(qr, { type: 'terminal', small: true });
-            console.log(qrTerminal);
-        } catch (tErr) {
-            console.log('Raw QR Data string:', qr);
-        }
+        console.log('WhatsApp QR Code generated! Scan in dashboard.');
     } catch (err) {
         console.error('Failed to generate QR data URL:', err);
     }
+});
+
+client.on('authenticated', () => {
+    console.log('WhatsApp authenticated! Connecting to WhatsApp Web...');
+    whatsappStatus = 'connecting';
 });
 
 client.on('ready', () => {
@@ -847,9 +844,6 @@ client.on('ready', () => {
     console.log('WhatsApp client is ready!');
 });
 
-client.on('authenticated', () => {
-    console.log('WhatsApp authenticated!');
-});
 
 client.on('auth_failure', (msg) => {
     console.error('WhatsApp auth failure:', msg);
