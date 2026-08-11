@@ -988,182 +988,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /* --------------------------------------------------
-     * 5. Add / Edit Property Modal Logic
-     * -------------------------------------------------- */
 
-    // Open for creation
-    btnAddItem.addEventListener('click', () => {
-        modalTitle.textContent = 'Add Property Listing';
-        menuItemId.value = '';
-        menuItemForm.reset();
-        menuItemAvailable.checked = true;
-        const imageUploadStatus = document.getElementById('image-upload-status');
-        const propertyImageFile = document.getElementById('property-image-file');
-        if (imageUploadStatus) imageUploadStatus.textContent = '';
-        if (propertyImageFile) propertyImageFile.value = '';
-        menuModal.classList.add('active');
-    });
-
-    // Open for edit
-    function openEditItemModal(e) {
-        const id = e.currentTarget.dataset.id;
-        const p = properties.find(i => i.id === id);
-        if (p) {
-            modalTitle.textContent = 'Edit Property Listing';
-            menuItemId.value = p.id;
-            menuItemName.value = p.title;
-            menuItemPrice.value = p.price;
-            menuItemPriceDisplay.value = p.priceDisplay || '';
-            menuItemCategory.value = p.type;
-            menuItemCarpet.value = p.carpetArea || '';
-            menuItemLocality.value = p.locality || '';
-            menuItemLandmark.value = p.landmark || '';
-            menuItemStatus.value = p.status || 'Ready to Move';
-            menuItemImage.value = p.image || '';
-            menuItemDesc.value = p.description;
-            menuItemAvailable.checked = p.available;
-            const imageUploadStatus = document.getElementById('image-upload-status');
-            const propertyImageFile = document.getElementById('property-image-file');
-            if (imageUploadStatus) imageUploadStatus.textContent = '';
-            if (propertyImageFile) propertyImageFile.value = '';
-            menuModal.classList.add('active');
-        }
-    }
-
-    // File Upload Handler for Property Images
-    const propertyImageFile = document.getElementById('property-image-file');
-    const imageUploadStatus = document.getElementById('image-upload-status');
-
-    if (propertyImageFile) {
-        propertyImageFile.addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            if (imageUploadStatus) imageUploadStatus.textContent = 'Uploading...';
-
-            const reader = new FileReader();
-            reader.onload = async (event) => {
-                const fileData = event.target.result;
-                try {
-                    const res = await fetch('/api/upload', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ filename: file.name, fileData: fileData })
-                    });
-                    if (res.ok) {
-                        const data = await res.json();
-                        menuItemImage.value = data.url;
-                        if (imageUploadStatus) imageUploadStatus.textContent = 'Uploaded successfully!';
-                        showToast('Image uploaded successfully!', 'success');
-                    } else {
-                        if (imageUploadStatus) imageUploadStatus.textContent = 'Upload failed.';
-                        showToast('Image upload failed.', 'danger');
-                    }
-                } catch (err) {
-                    console.error(err);
-                    if (imageUploadStatus) imageUploadStatus.textContent = 'Upload failed.';
-                    showToast('Connection error uploading image.', 'danger');
-                }
-            };
-            reader.readAsDataURL(file);
-        });
-    }
-
-    // Close Modal
-    const closeModal = () => {
-        menuModal.classList.remove('active');
-    };
-
-    btnCloseModal.addEventListener('click', closeModal);
-    btnCancelModal.addEventListener('click', closeModal);
-
-    // Close on click outside modal content card
-    menuModal.addEventListener('click', (e) => {
-        if (e.target === menuModal) {
-            closeModal();
-        }
-    });
-
-    // Modal submit handler
-    menuItemForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const id = menuItemId.value;
-        const payload = {
-            title: menuItemName.value,
-            price: parseFloat(menuItemPrice.value),
-            priceDisplay: menuItemPriceDisplay.value,
-            type: menuItemCategory.value,
-            carpetArea: menuItemCarpet.value,
-            locality: menuItemLocality.value,
-            landmark: menuItemLandmark.value,
-            status: menuItemStatus.value,
-            image: menuItemImage.value,
-            description: menuItemDesc.value,
-            available: menuItemAvailable.checked
-        };
-
-        if (id) {
-            // Edit Mode
-            const index = properties.findIndex(i => i.id === id);
-            if (index !== -1) {
-                properties[index] = { ...properties[index], ...payload };
-            }
-        } else {
-            // Add Mode
-            payload.id = 'prop_' + Date.now();
-            properties.push(payload);
-        }
-
-        // Save properties array to server
-        try {
-            const res = await fetch('/api/properties', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(properties)
-            });
-
-            if (res.ok) {
-                showToast(id ? 'Property listing updated!' : 'New property listing added!', 'success');
-                closeModal();
-                loadProperties();
-            } else {
-                showToast('Failed to save property listing.', 'danger');
-            }
-        } catch (err) {
-            console.error(err);
-            showToast('API Connection Error.', 'danger');
-        }
-    });
-
-    // Delete property handler
-    async function handleDeleteMenuItem(e) {
-        const id = e.currentTarget.dataset.id;
-        const p = properties.find(i => i.id === id);
-        if (!p) return;
-
-        if (confirm(`Are you sure you want to delete "${p.title}" from the properties portfolio?`)) {
-            properties = properties.filter(i => i.id !== id);
-            try {
-                const res = await fetch('/api/properties', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(properties)
-                });
-
-                if (res.ok) {
-                    showToast('Property listing deleted successfully.', 'success');
-                    loadProperties();
-                } else {
-                    showToast('Failed to delete property listing.', 'danger');
-                }
-            } catch (err) {
-                console.error(err);
-                showToast('API Connection Error.', 'danger');
-            }
-        }
-    }
 
     /* --------------------------------------------------
      * 6. Notification Toasts
@@ -1192,24 +1017,41 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 5000);
     }
 
+    if (btnRefreshQr) {
+        btnRefreshQr.addEventListener('click', () => {
+            showToast('Refreshing QR code state...', 'warning');
+            checkWhatsAppStatus();
+        });
+    }
+
+    const btnAddItemDashboard = document.getElementById('btn-add-item-dashboard');
+    if (btnAddItemDashboard) {
+        btnAddItemDashboard.addEventListener('click', (e) => {
+            e.preventDefault();
+            openAddItemModal();
+        });
+    }
+
     // Unlink WhatsApp account
-    btnWaLogout.addEventListener('click', async () => {
-        if (confirm('Are you sure you want to unlink and log out this WhatsApp bot? This will disconnect the assistant.')) {
-            try {
-                const res = await fetch('/api/logout', { method: 'POST' });
-                if (res.ok) {
-                    showToast('WhatsApp unlinked. Generating new QR code...', 'success');
-                    checkWhatsAppStatus();
-                } else {
-                    const data = await res.json();
-                    showToast(data.error || 'Failed to unlink.', 'danger');
+    if (btnWaLogout) {
+        btnWaLogout.addEventListener('click', async () => {
+            if (confirm('Are you sure you want to unlink and log out this WhatsApp bot? This will disconnect the assistant.')) {
+                try {
+                    const res = await fetch('/api/logout', { method: 'POST' });
+                    if (res.ok) {
+                        showToast('WhatsApp unlinked. Generating new QR code...', 'success');
+                        checkWhatsAppStatus();
+                    } else {
+                        const data = await res.json();
+                        showToast(data.error || 'Failed to unlink.', 'danger');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    showToast('API Connection Error.', 'danger');
                 }
-            } catch (err) {
-                console.error(err);
-                showToast('API Connection Error.', 'danger');
             }
-        }
-    });
+        });
+    }
 
     // Admin Dashboard logout handler
     const logoutBtn = document.getElementById('nav-logout');

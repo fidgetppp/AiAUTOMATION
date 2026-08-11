@@ -828,7 +828,13 @@ client.on('qr', async (qr) => {
     whatsappStatus = 'qr';
     try {
         qrCodeData = await qrcode.toDataURL(qr);
-        console.log('WhatsApp QR Code generated. Scan in dashboard.');
+        console.log('WhatsApp QR Code generated! Scan in dashboard or directly from terminal below:');
+        try {
+            const qrTerminal = await qrcode.toString(qr, { type: 'terminal', small: true });
+            console.log(qrTerminal);
+        } catch (tErr) {
+            console.log('Raw QR Data string:', qr);
+        }
     } catch (err) {
         console.error('Failed to generate QR data URL:', err);
     }
