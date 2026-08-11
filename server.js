@@ -499,6 +499,7 @@ app.post('/api/inquiries/:id/notes', async (req, res) => {
 // 4. Settings Management
 app.get('/api/settings', async (req, res) => {
     const settings = await readSettings();
+    const effectiveKey = process.env.GROQ_API_KEY || settings.apiKey || '';
     res.json({
         businessName: settings.businessName || settings.restaurantName || 'Kalyan Property Consultants',
         ownerNumber: settings.ownerNumber,
@@ -507,7 +508,7 @@ app.get('/api/settings', async (req, res) => {
         activePersonality: settings.activePersonality || 'kalyan',
         kalyanPrompt: settings.kalyanPrompt || settings.botPersonality || '',
         tanmayPrompt: settings.tanmayPrompt || '',
-        hasApiKey: !!process.env.GROQ_API_KEY
+        hasApiKey: !!effectiveKey
     });
 });
 
@@ -541,11 +542,12 @@ app.post('/api/settings', async (req, res) => {
     }
 
     if (apiKey) {
+        settings.apiKey = apiKey;
         process.env.GROQ_API_KEY = apiKey;
+        groq.apiKey = apiKey;
         try {
             const envContent = `PORT=${PORT}\nGROQ_API_KEY=${apiKey}\n`;
             await fs.writeFile(path.join(__dirname, '.env'), envContent, 'utf-8');
-            groq.apiKey = apiKey;
             console.log('API key updated dynamically');
         } catch (err) {
             console.error('Failed to write .env file:', err);
@@ -555,6 +557,7 @@ app.post('/api/settings', async (req, res) => {
     await writeSettings(settings);
     res.json({ success: true, settings: settings });
 });
+
 
 // 4.6. Image Upload Management
 app.post('/api/upload', async (req, res) => {
@@ -925,10 +928,12 @@ client.on('message', async (msg) => {
     console.log(`Received message from ${from}: ${body}`);
 
     // 5. Silent check for GROQ_API_KEY (DO NOT send unprompted text to contact!)
-    if (!process.env.GROQ_API_KEY) {
+    const effectiveApiKey = process.env.GROQ_API_KEY || settings.apiKey || '';
+    if (!effectiveApiKey) {
         console.log(`GROQ_API_KEY is missing. Skipping auto-reply to ${from}`);
         return;
     }
+    groq.apiKey = effectiveApiKey;
 
     // Get or initialize session
     if (!sessions.has(from)) {
